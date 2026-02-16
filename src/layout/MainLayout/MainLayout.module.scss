@@ -1,10 +1,9 @@
 .mainLayout {
-  width: 100vw;
+  width: 100dvw;
   height: 100%;
-  background: $main-bg;
+  //background: $main-bg;
 
   .navMenuContainer {
-    width: 100%;
     display: flex;
     justify-content: center;
     background: white;
@@ -33,7 +32,6 @@
           text-decoration: none;
           cursor: pointer;
           margin-left: 50px;
-          font-family: $font-primary;
 
           &:first-child {
             margin-left: 0;

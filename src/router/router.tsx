@@ -3,11 +3,8 @@ import { MainLayout } from '@layout';
 import { Error, Main } from '@pages';
 
 export const routerData = [
-  { id: 1, label: 'Discover', path: '/discover', element: <Error /> },
-  { id: 2, label: 'Creators', path: '/creators', element: <Error /> },
-  { id: 3, label: 'Sell', path: '/sell', element: <Error /> },
-  { id: 4, label: 'Stats', path: '/stats', element: <Error /> },
-  { id: 5, label: 'Main', path: '/', element: <Main /> },
+  { id: 1, label: 'Чат', path: '/', element: <Main /> },
+  { id: 2, label: 'Не чат', path: '/discover', element: <Error /> },
 ];
 
 export const router = createBrowserRouter([

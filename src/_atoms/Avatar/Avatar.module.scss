@@ -1,0 +1,23 @@
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: $primary-bg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid $orange-1;
+  position: relative;
+  flex-shrink: 0;
+
+  .status {
+    position: absolute;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    border: 1px solid $primary-bg;
+    background: $orange-1;
+    bottom: -2px;
+    right: 6px;
+  }
+}

@@ -1,0 +1,10 @@
+.auth {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .title {
+    text-align: center;
+    font-family: $font-medium;
+  }
+}

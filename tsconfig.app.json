@@ -27,12 +27,15 @@
     "baseUrl": "./",
     "paths": {
       "@atoms": ["src/_atoms"],
+      "@molecules": ["src/_molecules"],
+      "@components": ["src/_components"],
       "@layout": ["src/layout"],
       "@pages": ["src/pages"],
     },
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true // Разрешить импортировать модули не имеющие внутри себя "import default"
   },
   "include": [
     "src"
-  ]
+  ],
+  "exclude": ["node_modules"]
 }

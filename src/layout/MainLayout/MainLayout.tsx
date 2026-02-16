@@ -1,6 +1,5 @@
 import styles from './MainLayout.module.scss';
 import { Link, Outlet } from 'react-router-dom';
-import logoSvg from '../../../public/logo.svg';
 import { routerData } from '../../router/router';
 
 export const MainLayout = () => {
@@ -9,7 +8,7 @@ export const MainLayout = () => {
       <div className={styles.navMenuContainer}>
         <div className={styles.navMenu}>
           <Link to={'/'} className={styles.navMenu_logo}>
-            <img src={logoSvg} />
+            <img src={'/logo.svg'} alt={''} />
           </Link>
 
           <div className={styles.navMenu_list}>

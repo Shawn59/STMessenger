@@ -1,0 +1,43 @@
+.textFieldChat {
+  :global(.MuiInputBase-root) {
+    height: 34px;
+    border: 1px solid $orange-1;
+    padding-right: 0;
+
+    &:global(.Mui-focused) {
+      border: 1px solid $orange-2;
+    }
+
+    fieldset {
+      border: none;
+    }
+  }
+
+  .endIcon {
+    width: 22px;
+    cursor: pointer;
+
+    &.withFill {
+      &:hover {
+        fill: $orange-1;
+      }
+    }
+
+    &.smile {
+      margin-right: 4px;
+      &:hover {
+        stroke: $orange-1;
+      }
+    }
+  }
+
+  .sendBtnContainer {
+    margin-left: 28px;
+  }
+
+  ::placeholder {
+    font-size: 12px;
+    color: $text-default;
+    opacity: 0.5;
+  }
+}
