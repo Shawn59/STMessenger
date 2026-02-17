@@ -1,66 +1,114 @@
 import styles from './Chat.module.scss';
 import classNames from 'classnames';
-import React, { FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import type { IChatTypes } from './Chat.types';
-import { AvatarAtom, ButtonAtom, TextFieldChat } from '@atoms';
+import { AvatarAtom, TextFieldChat } from '@atoms';
 import { Message } from './components/Message/Message';
-import { io } from 'socket.io-client';
+import uuid from 'react-uuid';
+import socket from '../../socket';
+import type { IUser } from '../../store/userSlice/user.slice.types';
+import { useAppSelector } from '../../store/hooks';
+import { getDateLocalUtc } from '../../utils/getFromatedDate';
+import { DialogProfile } from '../DialogProfile/DialogProfile';
 
-export interface IUser {
-  name: string;
-  lastName: string;
-  status: 1 | 0;
-  profession?: string;
-  avatarImg?: string;
-}
-
-//const socket = io('http://localhost:5000');
+const field = () => {
+  return <div></div>;
+};
 
 export const Chat: FC<IChatTypes> = ({ className = '' }) => {
-  const [user, setUser] = useState<IUser>({ name: 'Петя', lastName: 'Петровиков', status: 1, profession: 'менеджер' });
+  const user: IUser = useAppSelector((state) => state.user.user);
+  let nextDate = '';
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [message, setMessage] = useState('');
 
-  const data = [
-    { id: 1, message: 'Привет, как дела?', user, date: '12.11.2012' },
-    { id: 2, message: 'Сегодня отличная погода, не правда ли?', user, date: '15.03.2013' },
-    {
-      id: 3,
-      message: 'Нужно будет купить продукты: молоко, хлеб, яйца, сыр, помидоры и ещё что-нибудь к чаю.',
-      user,
-      date: '05.07.2014',
-    },
-    { id: 4, message: 'Встреча назначена на 15:00 в офисе, не опаздывай.', user, date: '22.09.2015' },
-    { id: 5, message: 'Я вчера посмотрел интересный фильм, советую.', user, date: '10.12.2016' },
-    {
-      id: 6,
-      message: 'Код должен быть написан аккуратно и с комментариями, чтобы его можно было легко поддерживать.',
-      user,
-      date: '01.02.2017',
-    },
-    { id: 7, message: 'Срочно! Позвони мне, когда освободишься.', user, date: '18.06.2018' },
-    { id: 8, message: 'Завтра выходной, можно выспаться.', user, date: '30.11.2019' },
-    { id: 9, message: 'Не забудь оплатить счета за коммунальные услуги до 25 числа.', user, date: '14.04.2020' },
-    {
-      id: 10,
-      message: 'Это сообщение просто для заполнения массива, но оно достаточно длинное, чтобы показать разнообразие.',
-      user,
-      date: '07.08.2021',
-    },
-  ];
+  const [messageHistory, setMessageHistory] = useState([]);
+
+  const sendMessage = () => {
+    if (message.trim()) {
+      const newMessage = {
+        id: uuid(),
+        text: message,
+        user,
+        senderId: socket.id,
+        timestamp: new Date().toISOString(),
+      };
+
+      //отправка сообещния
+      socket.emit('message', newMessage);
+
+      setMessage('');
+    }
+  };
 
   useEffect(() => {
-    // socket.emit('join');
+    socket.on('message', (message) => {
+      console.log('Пришло новое сообщение', message);
+
+      setMessageHistory((prevMessages) => [...prevMessages, message]);
+    });
+
+    return () => {
+      socket.off('message');
+    };
   }, []);
 
-  const handleChangeValue = (e: React.SyntheticEvent<HTMLInputElement>) => {
+  // Подключение к Socket.IO после ввода имени
+  /*  useEffect(() => {
+    //if (!isNameSet) return;
+
+    // Подключаемся, передавая имя пользователя в query-параметрах
+    /!*  const newSocket = io(SERVER_URL, {
+      query: { username: `${user.name} ${user.lastName}` },
+    });*!/
+
+    /!*newSocket.on('chat message', (msg) => {
+      setMessages((prev) => [...prev, msg]);
+    });*!/
+
+    /!* newSocket.on('user joined', (name) => {
+      setMessages((prev) => [...prev, { system: true, text: `${name} присоединился к чату` }]);
+    });
+
+    newSocket.on('user left', (name) => {
+      setMessages((prev) => [...prev, { system: true, text: `${name} покинул чат` }]);
+    });*!/
+
+    socket.on('connect_error', (err) => {
+      console.error('Ошибка подключения:', err.message);
+      alert('Не удалось подключиться к серверу');
+    });
+
+    // setSocket(newSocket);
+
+    // Очистка при размонтировании
+    return () => {
+      socket.disconnect();
+    };
+  }, []);*/
+
+  const handleChangeValue = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const { value } = e.currentTarget;
 
     setMessage(value);
   };
 
-  const sendMessage = () => {
-    setMessage('');
+  // Отправка имени пользователя (логин)
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (user.firstName.trim()) {
+      setIsLoggedIn(true);
+      socket.emit('user_join', user.firstName);
+    }
   };
+
+  /*  const sendMessage = (e) => {
+    e.preventDefault();
+
+    if (message.trim()) {
+      socket.emit('send_message', { message });
+      setMessage('');
+    }
+  };*/
 
   return (
     <div className={classNames(styles.chat, className as any)}>
@@ -74,7 +122,7 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
           <AvatarAtom img={user.avatarImg} status={user.status} />
 
           <div className={styles.userInfo}>
-            <div className={styles.fio}>{`${user.name} ${user.lastName}`}</div>
+            <div className={styles.fio}>{`${user.firstName} ${user.lastName}`}</div>
 
             {user.profession && <div className={styles.prof}>{user.profession}</div>}
           </div>
@@ -87,16 +135,30 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
       </div>
 
       <div className={styles.body}>
-        {data.map((item) => {
+        {messageHistory.map((item) => {
+          let isShowDate = false;
+
+          let date = getDateLocalUtc(item.timestamp, 'd MMMM');
+
+          if (nextDate !== date) {
+            nextDate = date;
+            isShowDate = true;
+          }
+
           return (
-            <Message
-              key={item.id}
-              message={item.message}
-              name={item.user.name}
-              lastName={item.user.lastName}
-              avatarImg={item.user.avatarImg}
-              date={item.date}
-            />
+            <div key={item.id}>
+              {isShowDate && <div className={styles.dateChip}>{<span>{date}</span>}</div>}
+
+              <Message
+                message={item.text}
+                isAuthor={item.user.id === user.id}
+                user={user}
+                /*    name={item.user.firstName}
+                lastName={item.user.lastName}
+                avatarImg={item.user.avatarImg}*/
+                date={item.timestamp}
+              />
+            </div>
           );
         })}
       </div>
@@ -109,6 +171,8 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
           onChange={handleChangeValue}
         />
       </div>
+
+      <DialogProfile />
     </div>
   );
 };

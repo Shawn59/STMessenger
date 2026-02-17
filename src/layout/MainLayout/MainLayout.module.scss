@@ -1,47 +1,4 @@
 .mainLayout {
   width: 100dvw;
   height: 100%;
-  //background: $main-bg;
-
-  .navMenuContainer {
-    display: flex;
-    justify-content: center;
-    background: white;
-
-    .navMenu {
-      padding: 46px 0;
-      display: flex;
-      align-items: center;
-      max-width: 1440px;
-      width: 100%;
-
-      .navMenu_logo {
-        img {
-          width: 52px;
-          height: 52px;
-        }
-      }
-
-      .navMenu_list {
-        margin-left: 66px;
-        display: flex;
-
-        .list_item {
-          color: $navMenuLink;
-          text-transform: uppercase;
-          text-decoration: none;
-          cursor: pointer;
-          margin-left: 50px;
-
-          &:first-child {
-            margin-left: 0;
-          }
-
-          &:hover {
-            color: $navMenuLink__hover;
-          }
-        }
-      }
-    }
-  }
 }

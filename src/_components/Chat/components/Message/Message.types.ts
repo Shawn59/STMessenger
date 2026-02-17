@@ -1,9 +1,8 @@
-import { IUser } from '@components';
+import type { IUserModel } from '../../../../types/user';
 
 export interface IMessageTypes {
   message: string;
-  name: IUser['name'];
-  lastName: IUser['lastName'];
-  avatarImg?: IUser['avatarImg'];
+  user: IUserModel;
+  isAuthor?: boolean;
   date: string;
 }

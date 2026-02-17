@@ -14,33 +14,50 @@ const server = http.createServer(app);
 
 const io = new Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
 
-// Хранилище подключенных пользователей (для примера)
-const users = {};
-
 io.on('connection', (socket) => {
-  console.log('Новый пользователь подключился:', socket.id);
+  // console.log('Новый пользователь подключился:', socket.id);
+  /* const username = socket.handshake.query.username || 'Аноним';
+  console.log(`User connected: ${username} (socket: ${socket.id})`);*/
+  console.log('A User connected', socket.id);
 
-  // При авторизации клиент отправляет событие 'user_join'
+  socket.emit('message', {
+    id: 'Test-a4f903sdfa9d-5ec11e0eefc22',
+    text: 'Привет, друг!',
+    user: {
+      firstName: 'Тест',
+      lastName: 'Тестовиков',
+      profession: 'Тестер',
+      id: 'Test303936d5sdfsdf',
+    },
+    senderId: 'MtzYKG0qHULbWSDSAAAF232dsf21312',
+    timestamp: '2026-02-15T10:53:24.781Z',
+  });
+
+  socket.on('message', (message) => {
+    /* console.log('Message received:', message);*/
+    //socket.broadcast.emit("message", message);
+    io.emit('message', message);
+  });
+  socket.on('disconnect', () => {
+    console.log('A User disconnected', socket.id);
+  });
+
+  /*  // При авторизации клиент отправляет событие 'user_join'
   socket.on('user_join', (username) => {
     users[socket.id] = username;
     // Оповещаем всех, что новый пользователь вошёл
     io.emit('user_joined', username);
     console.log(`${username} присоединился к чату`);
-  });
+  });*/
 
-  // Обработка входящего сообщения
-  socket.on('send_message', (data) => {
-    // data = { message: 'текст', room?: '...' }
-    const username = users[socket.id];
-    if (username) {
-      const messageData = {
-        username,
-        message: data.message,
-        timestamp: new Date().toISOString(),
-      };
-      // Отправляем сообщение всем (можно фильтровать по комнате)
-      io.emit('new_message', messageData);
-    }
+  /* // При получении сообщения от клиента рассылаем его всем
+  socket.on('chat message', (msg) => {
+    const messageData = {
+      username,
+      text: msg,
+      timestamp: new Date().toISOString(),
+    };
+    io.emit('chat message', messageData); // отправляем всем, включая отправителя
   });
 
   // Отключение пользователя
@@ -51,7 +68,7 @@ io.on('connection', (socket) => {
       io.emit('user_left', username);
       console.log(`${username} покинул чат`);
     }
-  });
+  });*/
 });
 
 server.listen(PORT, () => {

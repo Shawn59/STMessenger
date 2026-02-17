@@ -3,6 +3,14 @@
   align-items: center;
   margin-top: 20px;
 
+  &.isAuthor {
+    justify-content: flex-end;
+
+    .messageBlock {
+      background: $blue-bg;
+    }
+  }
+
   .messageBlock {
     margin-left: 16px;
     border-radius: 10px 10px 0 10px;

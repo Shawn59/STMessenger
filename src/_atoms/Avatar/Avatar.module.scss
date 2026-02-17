@@ -10,6 +10,10 @@
   position: relative;
   flex-shrink: 0;
 
+  &.cursor {
+    cursor: pointer;
+  }
+
   .status {
     position: absolute;
     border-radius: 50%;

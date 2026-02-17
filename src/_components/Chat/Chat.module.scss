@@ -60,12 +60,28 @@
 
   .body {
     border: 1px solid $orange-1;
-    height: 100%;
-    max-height: 262px;
+    height: 262px;
     border-radius: 0 0 6px 6px;
     padding: 10px 20px;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
+
+    .dateChip {
+      border-radius: 10px;
+      width: 120px;
+      height: 26px;
+      font-size: 12px;
+      color: $text-default;
+      background: $secondary-bg;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+
+      span {
+        opacity: 0.5;
+      }
+    }
   }
 
   .messageInput {

@@ -1,16 +1,6 @@
-interface User {
-  id: number;
-  name: string;
-  avatar: string;
-  // другие поля
-}
+import type { IUserModel } from '../../types/user';
 
-interface ModalState {
+export interface IUserProfileModalState {
   isOpen: boolean;
-  userData: User | null;
+  userData: IUserModel | null;
 }
-
-const initialState: ModalState = {
-  isOpen: false,
-  userData: null,
-};

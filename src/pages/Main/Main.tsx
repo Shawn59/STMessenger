@@ -1,50 +1,29 @@
 import { Chat } from '@components';
 import styles from './Main.module.scss';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Auth } from '../../_components/Auth/Auth';
-
-interface IResponse<T> {
-  data: T;
-  status: number;
-  error: string;
-}
-
-/*const FormLogin = () => {
-  const [login, setLogin] = useState('');
-  const [password, setPassword] = useState('');
-
-  const dispatch = useDispatch<AppDispatch>;
-
-  const changeLogin = (e) => {
-    const { value } = e.currentTarget;
-    setLogin(value);
-
-    dispatch(userSliceActions.addJwt('dd'));
-  };
-
-  const changePassword = (e) => {
-    const { value } = e.currentTarget;
-    setPassword(value);
-  };
-
-  return (
-    <div>
-      <div>{'login'}</div>
-      <input value={login} onChange={changeLogin} />
-
-      <div>{'password'}</div>
-      <input value={password} onChange={changePassword} />
-    </div>
-  );
-};*/
+import { constants } from '../../constants';
+import { useDispatch } from 'react-redux';
+import { actionSetUser } from '../../store/userSlice/user.slice';
+import { useAppSelector } from '../../store/hooks';
 
 export const Main = () => {
-  return (
-    <section className={styles.main}>
-      {/*<Auth />*/}
+  const dispatch = useDispatch();
+  const user = useAppSelector((state) => state.user.user);
 
-      <Chat className={styles.chatContainer} />
-      {/* <FormLogin />*/}
-    </section>
-  );
+  useEffect(() => {
+    const userInfo = localStorage.getItem(constants.localStorage.USER_INFO);
+
+    if (userInfo) {
+      try {
+        dispatch(actionSetUser(JSON.parse(userInfo)));
+      } catch (error) {
+        console.error('Невалидные данные для userInfo', error);
+
+        localStorage.removeItem(constants.localStorage.USER_INFO);
+      }
+    }
+  }, [dispatch]);
+
+  return <section className={styles.main}>{user ? <Chat className={styles.chatContainer} /> : <Auth />}</section>;
 };

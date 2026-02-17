@@ -1,10 +1,11 @@
 import styles from './Avatar.module.scss';
 import type { IAvatarTypes } from './Avatar.types';
 import { FC } from 'react';
+import classNames from 'classnames';
 
-export const AvatarAtom: FC<IAvatarTypes> = ({ img, status = 0 }) => {
+export const AvatarAtom: FC<IAvatarTypes> = ({ img, status = 0, onClick, className }) => {
   return (
-    <div className={styles.avatar}>
+    <div className={classNames(styles.avatar, onClick && styles.cursor, className as any)} onClick={onClick}>
       <img src={img ?? '/chat/avatar-template.svg'} alt={'аватар'} />
       {!!status && <div className={styles.status} />}
     </div>
