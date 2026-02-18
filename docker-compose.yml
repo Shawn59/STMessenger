@@ -4,11 +4,4 @@ services:
     build: ./
     ports:
       - "80:80"
-    container_name: app
-  ssr:
-    build:
-        context: ./
-        dockerfile: Nockerfile
-    ports:
-      - "3010:3010"
-    container_name: ssr
+    container_name: ST-messenger
