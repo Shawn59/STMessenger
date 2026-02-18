@@ -1,13 +1,14 @@
 import styles from './Chat.module.scss';
 import classNames from 'classnames';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import type { IChatTypes } from './Chat.types';
-import { AvatarAtom, MenuAtom, TextFieldChat } from '@atoms';
+import { AvatarAtom, MenuAtom } from '@atoms';
 import { Message } from './components/Message/Message';
+import { TextFieldChat } from './components/TextFieldChat/TextFieldChat';
 import uuid from 'react-uuid';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { getDateLocalUtc } from '../../utils/getFromatedDate';
-import { DialogProfile } from '../DialogProfile/DialogProfile';
+import { DialogProfile } from './components/DialogProfile/DialogProfile';
 import { actionLogout } from '../../store/userSlice/user.slice';
 import type { IUserModel } from '../../types/user';
 import { actionShowSnackbar } from '../../store/snackbarSlice/snackbarSlice.slice';

@@ -3,9 +3,9 @@ import type { IDialogProfile } from './DialogProfile.types';
 import React, { FC } from 'react';
 import styles from './DialogProfile.module.scss';
 import { AvatarAtom } from '@atoms';
-import { actionClearModal, actionCloseModal } from '../../store/userProfileModalSlice/userProfileModal.slice';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import type { IUserProfileModalState } from '../../store/userProfileModalSlice/userProfileModal.slice.types';
+import { actionClearModal, actionCloseModal } from '../../../../store/userProfileModalSlice/userProfileModal.slice';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import type { IUserProfileModalState } from '../../../../store/userProfileModalSlice/userProfileModal.slice.types';
 
 export const DialogProfile: FC<IDialogProfile> = React.memo(() => {
   const dispatch = useAppDispatch();

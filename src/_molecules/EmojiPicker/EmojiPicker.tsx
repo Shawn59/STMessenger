@@ -1,7 +1,7 @@
 import { FC, useRef, useState } from 'react';
 import { IconButton, Popover } from '@mui/material';
 import styles from './EmojiPicker.module.scss';
-import { SearchInputAtom } from '../SearchInput/SearchInput';
+import { SearchInputAtom } from '@atoms';
 import type { IEmojiPickerAtom } from './EmojiPicker.types';
 
 export const EmojiPickerAtom: FC<IEmojiPickerAtom> = ({ children, onSelect }) => {

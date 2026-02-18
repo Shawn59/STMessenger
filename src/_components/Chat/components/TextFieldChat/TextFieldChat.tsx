@@ -3,13 +3,11 @@ import type { ITextFieldChatTypes } from './TextFieldChat.types';
 import { ChangeEvent, FC, useState } from 'react';
 import styles from './TextFieldChat.module.scss';
 import classNames from 'classnames';
-import { ButtonAtom } from '../Button/Button';
-import { ClipSvg, GifSvg, SmileSvg } from '../../svg';
-import { EmojiPickerAtom } from '../EmojiPicker/EmojiPicker';
-import { GifPickerAtom } from '../GifPicker/GifPicker';
-import { DownloadFile } from '../DownloadFile/DownloadFile';
-import { constants } from '../../constants';
-import type { onRejectType } from '../DownloadFile/DownloadFile.types';
+import { ButtonAtom, DownloadFile } from '@atoms';
+import { ClipSvg, GifSvg, SmileSvg } from '../../../../svg';
+import { EmojiPickerAtom, GifPickerAtom } from '@molecules';
+import { constants } from '../../../../constants';
+import type { onRejectType } from '../../../../_atoms/DownloadFile/DownloadFile.types';
 
 export const TextFieldChat: FC<ITextFieldChatTypes> = ({
   className,
