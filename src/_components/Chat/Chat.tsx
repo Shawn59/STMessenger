@@ -1,48 +1,107 @@
 import styles from './Chat.module.scss';
 import classNames from 'classnames';
-import React, { ChangeEvent, FC, useEffect, useState } from 'react';
-import type { IChatTypes } from './Chat.types';
-import { AvatarAtom, TextFieldChat } from '@atoms';
+import React, { FC, useEffect, useState } from 'react';
+import type { IChatTypes, IMessage } from './Chat.types';
+import { AvatarAtom, MenuAtom, TextFieldChat } from '@atoms';
 import { Message } from './components/Message/Message';
 import uuid from 'react-uuid';
 import socket from '../../socket';
-import type { IUser } from '../../store/userSlice/user.slice.types';
-import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { getDateLocalUtc } from '../../utils/getFromatedDate';
 import { DialogProfile } from '../DialogProfile/DialogProfile';
-
-const field = () => {
-  return <div></div>;
-};
+import { actionLogout } from '../../store/userSlice/user.slice';
+import type { IUserModel } from '../../types/user';
+import { actionShowSnackbar } from '../../store/snackbarSlice/snackbarSlice.slice';
+import type { ISnackbarState } from '../../store/snackbarSlice/snackbarSlice.slice.types';
 
 export const Chat: FC<IChatTypes> = ({ className = '' }) => {
-  const user: IUser = useAppSelector((state) => state.user.user);
-  let nextDate = '';
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [message, setMessage] = useState('');
+  const [messageHistory, setMessageHistory] = useState<IMessage[]>([]);
 
-  const [messageHistory, setMessageHistory] = useState([]);
+  const dispatch = useAppDispatch();
+  const user: IUserModel = useAppSelector((state) => state.user.user);
 
-  const sendMessage = () => {
-    if (message.trim()) {
-      const newMessage = {
+  let nextDate = '';
+
+  const menuData = [{ id: 1, label: 'Выйти', onClick: logout }];
+
+  const showErrorUploadFile = (message: string) => {
+    const snackbar: ISnackbarState = {
+      message,
+      severity: 'error',
+      duration: 10000,
+    };
+
+    dispatch(actionShowSnackbar(snackbar));
+  };
+
+  const sendMessage = (message: string) => {
+    const newMessage: IMessage = {
+      id: uuid(),
+      text: message,
+      user,
+      senderId: socket.id,
+      timestamp: new Date().toISOString(),
+    };
+
+    //отправка сообещния
+    socket.emit('message', newMessage);
+  };
+
+  const sendGifMessage = (link: string) => {
+    const newMessage: IMessage = {
+      id: uuid(),
+      text: '',
+      link,
+      user,
+      senderId: socket.id,
+      timestamp: new Date().toISOString(),
+    };
+
+    //отправка сообещния
+    socket.emit('message', newMessage);
+  };
+
+  const sendFileMessage = (file: File) => {
+    console.log('file = ', file);
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const arrayBuffer = event.target.result;
+
+      const newMessage: IMessage = {
         id: uuid(),
-        text: message,
+        text: '',
         user,
+        file: {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          buffer: arrayBuffer,
+        },
         senderId: socket.id,
         timestamp: new Date().toISOString(),
       };
 
       //отправка сообещния
       socket.emit('message', newMessage);
+    };
 
-      setMessage('');
-    }
+    reader.readAsArrayBuffer(file);
   };
 
   useEffect(() => {
-    socket.on('message', (message) => {
+    socket.on('message', (message: IMessage) => {
       console.log('Пришло новое сообщение', message);
+
+      if (message.user.id !== user.id) {
+        const snackbarData: ISnackbarState = {
+          message: 'Пришло новое сообщение',
+          severity: 'success',
+        };
+
+        dispatch(actionShowSnackbar(snackbarData));
+      }
 
       setMessageHistory((prevMessages) => [...prevMessages, message]);
     });
@@ -86,12 +145,6 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
     };
   }, []);*/
 
-  const handleChangeValue = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    const { value } = e.currentTarget;
-
-    setMessage(value);
-  };
-
   // Отправка имени пользователя (логин)
   const handleLogin = (e) => {
     e.preventDefault();
@@ -109,6 +162,10 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
       setMessage('');
     }
   };*/
+
+  function logout() {
+    dispatch(actionLogout());
+  }
 
   return (
     <div className={classNames(styles.chat, className as any)}>
@@ -130,7 +187,11 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
 
         <div className={styles.toolsContainer}>
           <img className={styles.toolsContainer_icon} src={'/chat/phone.svg'} alt={'звонок'} />
-          <img className={styles.toolsContainer_icon} src={'/chat/menu.svg'} alt={'меню'} />
+
+          <MenuAtom
+            data={menuData}
+            elem={<img className={styles.toolsContainer_icon} src={'/chat/menu.svg'} alt={'меню'} />}
+          />
         </div>
       </div>
 
@@ -151,28 +212,28 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
 
               <Message
                 message={item.text}
+                link={item.link}
+                file={item.file}
                 isAuthor={item.user.id === user.id}
-                user={user}
-                /*    name={item.user.firstName}
-                lastName={item.user.lastName}
-                avatarImg={item.user.avatarImg}*/
+                user={item.user}
                 date={item.timestamp}
               />
             </div>
           );
         })}
+
+        <DialogProfile />
       </div>
 
       <div className={styles.messageInput}>
         <TextFieldChat
           placeholder={'Введите текст...'}
-          value={message}
-          onSubmit={sendMessage}
-          onChange={handleChangeValue}
+          onSendMessage={sendMessage}
+          onSendGifMessage={sendGifMessage}
+          onSendFileMessage={sendFileMessage}
+          onShowErrorUploadFile={showErrorUploadFile}
         />
       </div>
-
-      <DialogProfile />
     </div>
   );
 };

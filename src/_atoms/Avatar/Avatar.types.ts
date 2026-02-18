@@ -1,8 +1,8 @@
-import { IUser } from '@components';
+import type { IUserModel } from '../../types/user';
 
 export interface IAvatarTypes {
   img?: string;
-  status?: IUser['status'];
+  status?: IUserModel['status'];
   onClick?: () => void;
   className?: string;
 }

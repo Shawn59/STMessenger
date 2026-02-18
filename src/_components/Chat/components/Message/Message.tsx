@@ -1,20 +1,41 @@
 import type { IMessageTypes } from './Message.types';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { AvatarAtom } from '@atoms';
 import styles from './Message.module.scss';
 import classNames from 'classnames';
 import { getDateLocalUtc } from '../../../../utils/getFromatedDate';
 import { useAppDispatch } from '../../../../store/hooks';
 import { actionOpenModal } from '../../../../store/userProfileModalSlice/userProfileModal.slice';
+import { constants } from '../../../../constants';
+import { Tooltip } from '@mui/material';
 
-export const Message: FC<IMessageTypes> = ({ isAuthor = false, message, user, date }) => {
-  if (!user || !date || !message) return;
+export const Message: FC<IMessageTypes> = ({ isAuthor = false, message, link, file, user, date }) => {
+  if (!user || (!date && (!message || !link || !file))) return;
 
   const dispatch = useAppDispatch();
 
   const handleAvatarClick = () => {
     dispatch(actionOpenModal(user));
   };
+
+  const getFile = useMemo(() => {
+    if (file) {
+      const blob = new Blob([file.buffer], { type: file.type });
+      const url = URL.createObjectURL(blob);
+
+      const mimeKeys = Object.keys(constants.file.mimeTypeImages);
+
+      const isImage = mimeKeys.includes(file.type);
+
+      return (
+        <div className={styles.fileContainer}>
+          <a href={url} download={file.name}>
+            {isImage ? <img src={url} className={styles.fileImage} /> : file.name}
+          </a>
+        </div>
+      );
+    }
+  }, []);
 
   return (
     <div className={classNames(styles.message, isAuthor && styles.isAuthor)}>
@@ -27,7 +48,11 @@ export const Message: FC<IMessageTypes> = ({ isAuthor = false, message, user, da
           <div className={styles.header_date}>{getDateLocalUtc(date)}</div>
         </div>
 
-        <div className={styles.text}>{message}</div>
+        {message && <div className={styles.text}>{message}</div>}
+
+        {link && <img src={link} className={styles.img} />}
+
+        {file && getFile}
       </div>
     </div>
   );

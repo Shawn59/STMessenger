@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
 
   socket.emit('message', {
     id: 'Test-a4f903sdfa9d-5ec11e0eefc22',
-    text: 'Привет, друг!',
+    text: 'Привет, коллега!',
     user: {
       firstName: 'Тест',
       lastName: 'Тестовиков',

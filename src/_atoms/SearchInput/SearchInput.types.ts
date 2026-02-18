@@ -3,7 +3,4 @@ export interface ISearchInputAtom {
   onChange?: (value: string) => void;
   value?: string;
   className?: string;
-  skeleton?: boolean;
-  disabled?: boolean;
-  onClear?: () => void;
 }

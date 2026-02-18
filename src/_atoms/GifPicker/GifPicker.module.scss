@@ -9,23 +9,29 @@
   }
 }
 
-.emojiPickerPopover {
+.gifPickerPopover {
   :global(.MuiPaper-root) {
-    padding: 20px 14px 14px 14px;
     width: 216px;
     height: 238px;
+    padding: 20px 0 14px 0;
   }
 
-  .emojiList {
+  .searchInput {
+    margin: 0 14px;
+  }
+
+  .gifList {
     display: grid;
-    gap: 4px;
-    grid-template-columns: repeat(auto-fill, minmax(20px, 1fr));
+    gap: 2px;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
     max-height: 160px;
     overflow-y: auto;
     margin-top: 8px;
 
-    .emojiList_item {
+    .gifList_item {
       cursor: pointer;
+      width: 70px;
+      height: 70px;
     }
   }
 }

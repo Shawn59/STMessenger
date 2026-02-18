@@ -1,5 +1,8 @@
 import type { TextFieldProps } from '@mui/material';
 
 export interface ITextFieldChatTypes extends TextFieldProps {
-  onSubmit: () => void;
+  onSendMessage: (message: string) => void;
+  onSendGifMessage: (link: string) => void;
+  onSendFileMessage: (file: File) => void;
+  onShowErrorUploadFile: (message: string) => void;
 }

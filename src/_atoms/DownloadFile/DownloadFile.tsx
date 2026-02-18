@@ -1,35 +1,24 @@
 import React, { FC } from 'react';
-import { DropzoneOptions, useDropzone } from 'react-dropzone';
-import { ButtonAtom, TooltipAtom } from '@atoms';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { useDropzone } from 'react-dropzone';
+import styles from './DownloadFile.module.scss';
+import type { IDropZoneAtom } from './DownloadFile.types';
 
-interface IDropZoneAtom {
-  onAccept: (files: File[], screen: string) => void;
-  onReject: (files: File[]) => void;
-  options: DropzoneOptions;
-  screen: string;
-}
-
-export const DownLoadImage: FC<IDropZoneAtom> = (props) => {
-  const { onAccept, onReject, options, screen } = props;
-
+export const DownloadFile: FC<IDropZoneAtom> = ({ onAccept, onReject, options, children }) => {
   const { getInputProps, open } = useDropzone({
     onDrop: (acceptedFiles, fileRejections) => {
       if (acceptedFiles.length) {
-        onAccept(acceptedFiles, screen);
+        onAccept(acceptedFiles);
       }
       if (fileRejections.length) {
-        onReject(fileRejections.map((f) => f.file));
+        onReject(fileRejections[0].file, fileRejections[0].errors[0]);
       }
     },
     ...options,
   });
 
   return (
-    <div>
-      <TooltipAtom title={'Загрузить изображение'}>
-        <ButtonAtom startIcon={<UploadFileIcon />} theme={'Secondary'} onClick={open} />
-      </TooltipAtom>
+    <div onClick={open} className={styles.downloadFile}>
+      {children}
       <input {...getInputProps()} />
     </div>
   );
