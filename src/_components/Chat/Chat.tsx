@@ -1,6 +1,6 @@
 import styles from './Chat.module.scss';
 import classNames from 'classnames';
-import React, { FC } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import type { IChatTypes } from './Chat.types';
 import { AvatarAtom, MenuAtom } from '@atoms';
 import { Message } from './components/Message/Message';
@@ -16,15 +16,30 @@ import type { ISnackbarState } from '../../store/snackbarSlice/snackbarSlice.sli
 import type { IMessage, ISocketData } from '../../store/socketSlice/socket.slice.types';
 import { actionSendMessage } from '../../store/socketSlice/socket.slice';
 import { arrayBufferToBase64 } from '../../utils/bufferUtils';
+import { isUserNearBottom } from './helpers/isUserNearBottom';
 
 export const Chat: FC<IChatTypes> = ({ className = '' }) => {
   const dispatch = useAppDispatch();
   const user: IUserModel = useAppSelector((state) => state.user.user);
   const socket: ISocketData = useAppSelector((state) => state.socket);
-
   let nextDate = '';
-
   const menuData = [{ id: 1, label: 'Выйти', onClick: logout }];
+  const messagesContainerRef = useRef<HTMLElement | null>(null);
+  const endDivRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (Array.isArray(socket.messages)) {
+      scrollToBottomIfNeeded(socket.messages[socket.messages.length - 1]);
+    }
+  }, [socket.messages, user]);
+
+  function scrollToBottomIfNeeded(message: IMessage) {
+    if (messagesContainerRef.current && user && endDivRef.current) {
+      if (message?.user?.id === user.id || isUserNearBottom(messagesContainerRef.current)) {
+        endDivRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }
 
   const showErrorUploadFile = (message: string) => {
     const snackbar: ISnackbarState = {
@@ -124,7 +139,7 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
         </div>
       </div>
 
-      <div className={styles.content}>
+      <div className={styles.content} ref={messagesContainerRef}>
         {socket?.messages?.map((item) => {
           let isShowDate = false;
 
@@ -150,6 +165,8 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
             </div>
           );
         })}
+
+        <div ref={endDivRef} />
 
         <DialogProfile />
       </div>
