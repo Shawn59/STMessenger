@@ -18,6 +18,8 @@ const userProfileModalSlice = createSlice({
     },
     closeModal: (state) => {
       state.isOpen = false;
+    },
+    clearModal: (state) => {
       state.userData = null;
     },
   },
@@ -26,3 +28,4 @@ const userProfileModalSlice = createSlice({
 export default userProfileModalSlice.reducer;
 export const actionOpenModal = userProfileModalSlice.actions.openModal;
 export const actionCloseModal = userProfileModalSlice.actions.closeModal;
+export const actionClearModal = userProfileModalSlice.actions.clearModal;

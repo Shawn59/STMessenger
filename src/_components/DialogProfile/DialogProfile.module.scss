@@ -58,5 +58,37 @@
         }
       }
     }
+
+    .infoContainer {
+      margin-top: 14px;
+
+      .infoBlock {
+        .title {
+          font-size: 14px;
+          line-height: 125%;
+          margin-bottom: 4px;
+        }
+
+        .email {
+          text-decoration: none;
+          color: $orange-1;
+        }
+
+        .phone {
+          text-decoration: none;
+        }
+
+        .empty {
+          color: $text-secondary;
+        }
+      }
+
+      .divider {
+        width: 100%;
+        background: $text-tr;
+        height: 1px;
+        margin: 14px 0;
+      }
+    }
   }
 }

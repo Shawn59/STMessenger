@@ -3,6 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { IUserState } from './user.slice.types';
 import { constants } from '../../constants';
 import type { IUserModel } from '../../types/user';
+import uuid from 'react-uuid';
 
 const initialState: IUserState = {
   user: null,
@@ -14,6 +15,7 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action: PayloadAction<IUserModel>) => {
       state.user = action.payload;
+      state.user.id = uuid();
     },
     logout: (state) => {
       state.user = null;

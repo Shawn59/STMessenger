@@ -3,8 +3,8 @@ import styles from './Auth.module.scss';
 import { useAppDispatch } from '../../store/hooks';
 import { useForm } from 'react-hook-form';
 import { actionSetUser } from '../../store/userSlice/user.slice';
-import uuid from 'react-uuid';
-import type { AuthFormValues } from '../../store/authSlice/auth.slice.types';
+import type { IUserModel } from '../../types/user';
+
 export const Auth = () => {
   const {
     register,
@@ -16,13 +16,15 @@ export const Auth = () => {
       firstName: '',
       lastName: '',
       profession: '',
+      email: '',
+      phone: '',
     },
   });
 
   const dispatch = useAppDispatch();
 
-  const onSubmit = (data: AuthFormValues) => {
-    dispatch(actionSetUser({ ...data, id: uuid() }));
+  const onSubmit = (data: IUserModel) => {
+    dispatch(actionSetUser(data));
 
     handleReset();
   };
@@ -77,6 +79,34 @@ export const Auth = () => {
         label={'Профессия*'}
         error={!!errors.profession}
         helperText={errors.profession?.message}
+        autoComplete={'off'}
+      />
+
+      <TextField
+        {...register('email', {
+          maxLength: { value: 20, message: 'Максимум 20 символов' },
+          pattern: {
+            value: /^\S+$/,
+            message: 'Некорректное значение',
+          },
+        })}
+        label={'Email'}
+        error={!!errors.email}
+        helperText={errors.email?.message}
+        autoComplete={'off'}
+      />
+
+      <TextField
+        {...register('phone', {
+          maxLength: { value: 20, message: 'Максимум 20 символов' },
+          pattern: {
+            value: /^\S+$/,
+            message: 'Некорректное значение',
+          },
+        })}
+        label={'Телефон'}
+        error={!!errors.phone}
+        helperText={errors.phone?.message}
         autoComplete={'off'}
       />
 

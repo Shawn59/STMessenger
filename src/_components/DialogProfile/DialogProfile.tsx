@@ -3,7 +3,7 @@ import type { IDialogProfile } from './DialogProfile.types';
 import React, { FC } from 'react';
 import styles from './DialogProfile.module.scss';
 import { AvatarAtom } from '@atoms';
-import { actionCloseModal } from '../../store/userProfileModalSlice/userProfileModal.slice';
+import { actionClearModal, actionCloseModal } from '../../store/userProfileModalSlice/userProfileModal.slice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import type { IUserProfileModalState } from '../../store/userProfileModalSlice/userProfileModal.slice.types';
 
@@ -11,10 +11,12 @@ export const DialogProfile: FC<IDialogProfile> = React.memo(() => {
   const dispatch = useAppDispatch();
   const userProfile: IUserProfileModalState = useAppSelector((state) => state.userProfile);
 
-  console.log('userProfile = ', userProfile);
-
   const closeModal = () => {
     dispatch(actionCloseModal());
+
+    setTimeout(() => {
+      actionClearModal();
+    });
   };
 
   return (
@@ -44,24 +46,36 @@ export const DialogProfile: FC<IDialogProfile> = React.memo(() => {
 
                 <div className={styles.profession}>{userProfile.userData.profession}</div>
               </div>
-
-              {userProfile.userData?.email && (
-                <div>
-                  <div>{'Почта'}</div>
-
-                  <div>{userProfile.userData.email}</div>
-                </div>
-              )}
-
-              {userProfile.userData?.phone && (
-                <div>
-                  <div>{'Телефон'}</div>
-
-                  <div>{userProfile.userData.phone}</div>
-                </div>
-              )}
             </>
           )}
+        </div>
+
+        <div className={styles.infoContainer}>
+          <div className={styles.infoBlock}>
+            <div className={styles.title}>{'Почта'}</div>
+
+            {userProfile.userData?.email ? (
+              <a href={'mailto:' + userProfile.userData.email} className={styles.email}>
+                {userProfile.userData.email}
+              </a>
+            ) : (
+              <span className={styles.empty}>{'email не указан'}</span>
+            )}
+          </div>
+
+          <div className={styles.divider} />
+
+          <div className={styles.infoBlock}>
+            <div className={styles.title}>{'Телефон'}</div>
+
+            {userProfile.userData?.phone ? (
+              <a href={'tel:' + userProfile.userData.phone} className={styles.phone}>
+                {userProfile.userData.phone}
+              </a>
+            ) : (
+              <span className={styles.empty}>{'телефон не указан'}</span>
+            )}
+          </div>
         </div>
       </div>
     </Dialog>
