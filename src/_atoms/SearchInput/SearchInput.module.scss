@@ -1,0 +1,57 @@
+@use 'src/styles/index' as *;
+
+.searchInputContainer {
+  width: 100%;
+  margin: 0;
+  font-family: $fontRegular;
+}
+
+.search {
+  position: relative;
+  border-radius: 4px;
+  background-color: #f0f1f4;
+  width: 100%;
+
+  &:hover {
+    background-color: #f0f1f4;
+  }
+}
+
+.searchIconWrapper {
+  padding: 0 16px;
+  height: 100%;
+  position: absolute;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skeletonSearch {
+  border-radius: 4px;
+}
+
+.inputBase {
+  color: inherit;
+  width: 100%;
+
+  :global(.MuiInputBase-input) {
+    padding: 8px 36px 8px 0;
+    padding-left: 46px;
+    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    width: 200px;
+    height: 24px;
+  }
+}
+
+.clearButton {
+  position: absolute;
+  right: 8px;
+  color: $colorDarkTurquoise_900;
+  margin: 5px 0px 0px 0px;
+
+  &:hover {
+    color: $colorDarkTurquoise_900;
+    background-color: $colorDarkTurquoise_050;
+  }
+}
