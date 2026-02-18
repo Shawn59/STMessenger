@@ -1,5 +1,5 @@
 import type { IUserModel } from '../../../../types/user';
-import type { IMessageFile } from '../../Chat.types';
+import { IMessageFile } from '../../../../store/socketSlice/socket.slice.types';
 
 export interface IMessageTypes {
   message: string;

@@ -58,13 +58,42 @@
     }
   }
 
-  .body {
+  .content {
     border: 1px solid $orange-1;
     height: 262px;
     border-radius: 0 0 6px 6px;
     padding: 10px 20px;
     overflow-y: auto;
     overflow-x: hidden;
+    pointer-events: auto;
+    scrollbar-width: thin;
+    transition: scrollbar-color .3s ease;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-color: $scrollbar-bg transparent;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $primary-bg;
+      border-radius: 4px;
+    }
+
+    // Бегунок
+    &::-webkit-scrollbar-thumb {
+      background: $scrollbar-bg;
+      border-radius: 4px;
+
+      &:hover {
+        background: #333;
+      }
+    }
+
+    &::-webkit-scrollbar-button {
+      display: none;
+    }
 
     .dateChip {
       border-radius: 10px;

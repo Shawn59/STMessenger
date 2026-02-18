@@ -6,6 +6,14 @@ export const constants = {
   reduxSlice: {
     user: 'user',
     userProfileModal: 'userProfileModal',
+    snackbar: 'snackbar',
+    socket: 'socket',
+  },
+
+  reduxAction: {
+    socket: {
+      sendMessage: 'socket/sendMessage',
+    },
   },
 
   file: {

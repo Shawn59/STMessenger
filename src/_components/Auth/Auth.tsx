@@ -4,6 +4,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { useForm } from 'react-hook-form';
 import { actionSetUser } from '../../store/userSlice/user.slice';
 import type { IUserModel } from '../../types/user';
+import uuid from 'react-uuid';
 
 export const Auth = () => {
   const {
@@ -24,7 +25,7 @@ export const Auth = () => {
   const dispatch = useAppDispatch();
 
   const onSubmit = (data: IUserModel) => {
-    dispatch(actionSetUser(data));
+    dispatch(actionSetUser({ ...data, id: uuid() }));
 
     handleReset();
   };

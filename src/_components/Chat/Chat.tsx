@@ -1,11 +1,10 @@
 import styles from './Chat.module.scss';
 import classNames from 'classnames';
 import React, { FC, useEffect, useState } from 'react';
-import type { IChatTypes, IMessage } from './Chat.types';
+import type { IChatTypes } from './Chat.types';
 import { AvatarAtom, MenuAtom, TextFieldChat } from '@atoms';
 import { Message } from './components/Message/Message';
 import uuid from 'react-uuid';
-import socket from '../../socket';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { getDateLocalUtc } from '../../utils/getFromatedDate';
 import { DialogProfile } from '../DialogProfile/DialogProfile';
@@ -13,13 +12,14 @@ import { actionLogout } from '../../store/userSlice/user.slice';
 import type { IUserModel } from '../../types/user';
 import { actionShowSnackbar } from '../../store/snackbarSlice/snackbarSlice.slice';
 import type { ISnackbarState } from '../../store/snackbarSlice/snackbarSlice.slice.types';
+import type { IMessage, ISocketData } from '../../store/socketSlice/socket.slice.types';
+import { actionSendMessage } from '../../store/socketSlice/socket.slice';
+import { arrayBufferToBase64 } from '../../utils/bufferUtils';
 
 export const Chat: FC<IChatTypes> = ({ className = '' }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [messageHistory, setMessageHistory] = useState<IMessage[]>([]);
-
   const dispatch = useAppDispatch();
   const user: IUserModel = useAppSelector((state) => state.user.user);
+  const socket: ISocketData = useAppSelector((state) => state.socket);
 
   let nextDate = '';
 
@@ -40,12 +40,11 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
       id: uuid(),
       text: message,
       user,
-      senderId: socket.id,
+      senderId: socket.senderId,
       timestamp: new Date().toISOString(),
     };
 
-    //отправка сообещния
-    socket.emit('message', newMessage);
+    dispatch(actionSendMessage(newMessage));
   };
 
   const sendGifMessage = (link: string) => {
@@ -54,20 +53,23 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
       text: '',
       link,
       user,
-      senderId: socket.id,
+      senderId: socket.senderId,
       timestamp: new Date().toISOString(),
     };
 
-    //отправка сообещния
-    socket.emit('message', newMessage);
+    dispatch(actionSendMessage(newMessage));
   };
 
   const sendFileMessage = (file: File) => {
-    console.log('file = ', file);
     const reader = new FileReader();
 
     reader.onload = (event) => {
       const arrayBuffer = event.target.result;
+      let base64 = '';
+
+      if (arrayBuffer instanceof ArrayBuffer) {
+        base64 = arrayBufferToBase64(arrayBuffer);
+      }
 
       const newMessage: IMessage = {
         id: uuid(),
@@ -77,91 +79,17 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
           name: file.name,
           type: file.type,
           size: file.size,
-          buffer: arrayBuffer,
+          buffer: base64,
         },
-        senderId: socket.id,
+        senderId: socket.senderId,
         timestamp: new Date().toISOString(),
       };
 
-      //отправка сообещния
-      socket.emit('message', newMessage);
+      dispatch(actionSendMessage(newMessage));
     };
 
     reader.readAsArrayBuffer(file);
   };
-
-  useEffect(() => {
-    socket.on('message', (message: IMessage) => {
-      console.log('Пришло новое сообщение', message);
-
-      if (message.user.id !== user.id) {
-        const snackbarData: ISnackbarState = {
-          message: 'Пришло новое сообщение',
-          severity: 'success',
-        };
-
-        dispatch(actionShowSnackbar(snackbarData));
-      }
-
-      setMessageHistory((prevMessages) => [...prevMessages, message]);
-    });
-
-    return () => {
-      socket.off('message');
-    };
-  }, []);
-
-  // Подключение к Socket.IO после ввода имени
-  /*  useEffect(() => {
-    //if (!isNameSet) return;
-
-    // Подключаемся, передавая имя пользователя в query-параметрах
-    /!*  const newSocket = io(SERVER_URL, {
-      query: { username: `${user.name} ${user.lastName}` },
-    });*!/
-
-    /!*newSocket.on('chat message', (msg) => {
-      setMessages((prev) => [...prev, msg]);
-    });*!/
-
-    /!* newSocket.on('user joined', (name) => {
-      setMessages((prev) => [...prev, { system: true, text: `${name} присоединился к чату` }]);
-    });
-
-    newSocket.on('user left', (name) => {
-      setMessages((prev) => [...prev, { system: true, text: `${name} покинул чат` }]);
-    });*!/
-
-    socket.on('connect_error', (err) => {
-      console.error('Ошибка подключения:', err.message);
-      alert('Не удалось подключиться к серверу');
-    });
-
-    // setSocket(newSocket);
-
-    // Очистка при размонтировании
-    return () => {
-      socket.disconnect();
-    };
-  }, []);*/
-
-  // Отправка имени пользователя (логин)
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (user.firstName.trim()) {
-      setIsLoggedIn(true);
-      socket.emit('user_join', user.firstName);
-    }
-  };
-
-  /*  const sendMessage = (e) => {
-    e.preventDefault();
-
-    if (message.trim()) {
-      socket.emit('send_message', { message });
-      setMessage('');
-    }
-  };*/
 
   function logout() {
     dispatch(actionLogout());
@@ -176,7 +104,7 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
 
       <div className={styles.header}>
         <div className={styles.avatarContainer}>
-          <AvatarAtom img={user.avatarImg} status={user.status} />
+          <AvatarAtom img={user.avatarImg} status={1} />
 
           <div className={styles.userInfo}>
             <div className={styles.fio}>{`${user.firstName} ${user.lastName}`}</div>
@@ -195,8 +123,8 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
         </div>
       </div>
 
-      <div className={styles.body}>
-        {messageHistory.map((item) => {
+      <div className={styles.content}>
+        {socket?.messages?.map((item) => {
           let isShowDate = false;
 
           let date = getDateLocalUtc(item.timestamp, 'd MMMM');

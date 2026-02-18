@@ -7,7 +7,6 @@ import { getDateLocalUtc } from '../../../../utils/getFromatedDate';
 import { useAppDispatch } from '../../../../store/hooks';
 import { actionOpenModal } from '../../../../store/userProfileModalSlice/userProfileModal.slice';
 import { constants } from '../../../../constants';
-import { Tooltip } from '@mui/material';
 
 export const Message: FC<IMessageTypes> = ({ isAuthor = false, message, link, file, user, date }) => {
   if (!user || (!date && (!message || !link || !file))) return;
@@ -19,13 +18,12 @@ export const Message: FC<IMessageTypes> = ({ isAuthor = false, message, link, fi
   };
 
   const getFile = useMemo(() => {
-    if (file) {
-      const blob = new Blob([file.buffer], { type: file.type });
-      const url = URL.createObjectURL(blob);
-
+    if (file && typeof file.buffer === 'string') {
       const mimeKeys = Object.keys(constants.file.mimeTypeImages);
 
       const isImage = mimeKeys.includes(file.type);
+
+      const url = `data:${file.type};base64,${file.buffer}`;
 
       return (
         <div className={styles.fileContainer}>
