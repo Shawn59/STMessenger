@@ -37,7 +37,7 @@ export const DialogProfile: FC<IDialogProfile> = React.memo(() => {
 
       <div className={styles.body}>
         <div className={styles.avatarContainer}>
-          <AvatarAtom className={styles.avatar} />
+          <AvatarAtom className={styles.avatar} img={userProfile.userData?.avatarImg} />
 
           {userProfile.userData && (
             <>

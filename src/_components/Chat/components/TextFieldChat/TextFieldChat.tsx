@@ -62,9 +62,6 @@ export const TextFieldChat: FC<ITextFieldChatTypes> = ({
   };
 
   const handleRejectFile: onRejectType = (file, error) => {
-    console.log(' handleRejectFile file= ', file);
-    console.log(' handleRejectFile error= ', error);
-
     if (onShowErrorUploadFile) {
       onShowErrorUploadFile(error.message);
     }

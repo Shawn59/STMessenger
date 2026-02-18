@@ -3,7 +3,6 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { IUserState } from './user.slice.types';
 import { constants } from '../../constants';
 import type { IUserModel } from '../../types/user';
-import uuid from 'react-uuid';
 
 const initialState: IUserState = {
   user: null,

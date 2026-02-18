@@ -6,7 +6,11 @@ import classNames from 'classnames';
 export const AvatarAtom: FC<IAvatarTypes> = ({ img, status = 0, onClick, className }) => {
   return (
     <div className={classNames(styles.avatar, onClick && styles.cursor, className as any)} onClick={onClick}>
-      <img src={img ?? '/chat/avatar-template.svg'} alt={'аватар'} />
+      <img
+        src={img ?? '/chat/avatar-template.svg'}
+        className={classNames(styles.avatarImg, !img && styles.template)}
+        alt={'аватар'}
+      />
       {!!status && <div className={styles.status} />}
     </div>
   );
