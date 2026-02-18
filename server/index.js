@@ -15,9 +15,6 @@ const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
 
 io.on('connection', (socket) => {
-  // console.log('Новый пользователь подключился:', socket.id);
-  /* const username = socket.handshake.query.username || 'Аноним';
-  console.log(`User connected: ${username} (socket: ${socket.id})`);*/
   console.log('A User connected', socket.id);
 
   socket.emit('message', {
@@ -34,41 +31,11 @@ io.on('connection', (socket) => {
   });
 
   socket.on('message', (message) => {
-    /* console.log('Message received:', message);*/
-    //socket.broadcast.emit("message", message);
     io.emit('message', message);
   });
   socket.on('disconnect', () => {
     console.log('A User disconnected', socket.id);
   });
-
-  /*  // При авторизации клиент отправляет событие 'user_join'
-  socket.on('user_join', (username) => {
-    users[socket.id] = username;
-    // Оповещаем всех, что новый пользователь вошёл
-    io.emit('user_joined', username);
-    console.log(`${username} присоединился к чату`);
-  });*/
-
-  /* // При получении сообщения от клиента рассылаем его всем
-  socket.on('chat message', (msg) => {
-    const messageData = {
-      username,
-      text: msg,
-      timestamp: new Date().toISOString(),
-    };
-    io.emit('chat message', messageData); // отправляем всем, включая отправителя
-  });
-
-  // Отключение пользователя
-  socket.on('disconnect', () => {
-    const username = users[socket.id];
-    if (username) {
-      delete users[socket.id];
-      io.emit('user_left', username);
-      console.log(`${username} покинул чат`);
-    }
-  });*/
 });
 
 server.listen(PORT, () => {
