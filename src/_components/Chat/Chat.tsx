@@ -9,7 +9,6 @@ import uuid from 'react-uuid';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { getDateLocalUtc } from '../../utils/getFromatedDate';
 import { DialogProfile } from './components/DialogProfile/DialogProfile';
-import { actionLogout } from '../../store/userSlice/user.slice';
 import type { IUserModel } from '../../types/user';
 import { actionShowSnackbar } from '../../store/snackbarSlice/snackbarSlice.slice';
 import type { ISnackbarState } from '../../store/snackbarSlice/snackbarSlice.slice.types';
@@ -17,13 +16,13 @@ import type { IMessage, ISocketData } from '../../store/socketSlice/socket.slice
 import { actionSendMessage } from '../../store/socketSlice/socket.slice';
 import { arrayBufferToBase64 } from '../../utils/bufferUtils';
 import { isUserNearBottom } from './helpers/isUserNearBottom';
+import { HeaderChat } from './components/HeaderChat/HeaderChat';
 
 export const Chat: FC<IChatTypes> = ({ className = '' }) => {
   const dispatch = useAppDispatch();
   const user: IUserModel = useAppSelector((state) => state.user.user);
   const socket: ISocketData = useAppSelector((state) => state.socket);
   let nextDate = '';
-  const menuData = [{ id: 1, label: 'Выйти', onClick: logout }];
   const messagesContainerRef = useRef<HTMLElement | null>(null);
   const endDivRef = useRef<HTMLElement | null>(null);
 
@@ -107,10 +106,6 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
     reader.readAsArrayBuffer(file);
   };
 
-  function logout() {
-    dispatch(actionLogout());
-  }
-
   return (
     <div className={classNames(styles.chat, className as any)}>
       <div className={styles.logoContainer}>
@@ -118,26 +113,7 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
         <span className={styles.logoContainer_text}>{'Messenger'}</span>
       </div>
 
-      <div className={styles.header}>
-        <div className={styles.avatarContainer}>
-          <AvatarAtom img={user.avatarImg} status={1} />
-
-          <div className={styles.userInfo}>
-            <div className={styles.fio}>{`${user.firstName} ${user.lastName}`}</div>
-
-            {user.profession && <div className={styles.prof}>{user.profession}</div>}
-          </div>
-        </div>
-
-        <div className={styles.toolsContainer}>
-          <img className={styles.toolsContainer_icon} src={'/chat/phone.svg'} alt={'звонок'} />
-
-          <MenuAtom
-            data={menuData}
-            elem={<img className={styles.toolsContainer_icon} src={'/chat/menu.svg'} alt={'меню'} />}
-          />
-        </div>
-      </div>
+      <HeaderChat />
 
       <div className={styles.content} ref={messagesContainerRef}>
         {socket?.messages?.map((item) => {

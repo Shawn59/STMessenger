@@ -69,7 +69,7 @@ export const DialogProfile: FC<IDialogProfile> = React.memo(() => {
             <div className={styles.title}>{'Телефон'}</div>
 
             {userProfile.userData?.phone ? (
-              <a href={'tel:' + userProfile.userData.phone} className={styles.phone}>
+              <a href={'tel:' + userProfile.userData.phone.match(/\d/g).join('')} className={styles.phone}>
                 {userProfile.userData.phone}
               </a>
             ) : (
