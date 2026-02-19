@@ -17,8 +17,6 @@ export const TextFieldChat: FC<ITextFieldChatTypes> = React.memo(({
 }) => {
   const [message, setMessage] = useState('');
 
-  console.log('TextFieldChat')
-
   const fileOptions = {
     accept: constants.file.mimeTypeAccept,
     maxFiles: 1,

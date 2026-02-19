@@ -11,8 +11,6 @@ import { constants } from '../../../../constants';
 export const Message: FC<IMessageTypes> = React.memo(({ isAuthor = false, message, link, file, user, date }) => {
   if (!user || (!date && (!message || !link || !file))) return;
 
-  console.log('Message')
-
   const dispatch = useAppDispatch();
 
   const handleAvatarClick = () => {
