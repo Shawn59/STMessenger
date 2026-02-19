@@ -1,5 +1,5 @@
 import type { IMessageTypes } from './Message.types';
-import { FC, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { AvatarAtom } from '@atoms';
 import styles from './Message.module.scss';
 import classNames from 'classnames';
@@ -8,8 +8,10 @@ import { useAppDispatch } from '../../../../store/hooks';
 import { actionOpenModal } from '../../../../store/userProfileModalSlice/userProfileModal.slice';
 import { constants } from '../../../../constants';
 
-export const Message: FC<IMessageTypes> = ({ isAuthor = false, message, link, file, user, date }) => {
+export const Message: FC<IMessageTypes> = React.memo(({ isAuthor = false, message, link, file, user, date }) => {
   if (!user || (!date && (!message || !link || !file))) return;
+
+  console.log('Message')
 
   const dispatch = useAppDispatch();
 
@@ -54,4 +56,7 @@ export const Message: FC<IMessageTypes> = ({ isAuthor = false, message, link, fi
       </div>
     </div>
   );
-};
+}, (prev, next) => {
+  return prev.user.avatarImg === next.user.avatarImg &&
+      prev.user === next.user;
+});
