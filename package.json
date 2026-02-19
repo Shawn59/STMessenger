@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "build-prev": "vite build && vite preview",
     "server": "nodemon server/index.js",
     "docker-build-test": "docker-compose up --build"
   },
