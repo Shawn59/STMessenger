@@ -1,6 +1,6 @@
 import { InputAdornment, TextField } from '@mui/material';
 import type { ITextFieldChatTypes } from './TextFieldChat.types';
-import { ChangeEvent, FC, useState } from 'react';
+import React, { ChangeEvent, FC, useState } from 'react';
 import styles from './TextFieldChat.module.scss';
 import classNames from 'classnames';
 import { ButtonAtom, DownloadFile } from '@atoms';
@@ -9,7 +9,7 @@ import { EmojiPickerMol, GifPickerMol } from '@molecules';
 import { constants } from '../../../../constants';
 import type { onRejectType } from '../../../../_atoms/DownloadFile/DownloadFile.types';
 
-export const TextFieldChat: FC<ITextFieldChatTypes> = ({
+export const TextFieldChat: FC<ITextFieldChatTypes> = React.memo(({
   className,
   onSendMessage,
   onShowErrorUploadFile,
@@ -116,4 +116,4 @@ export const TextFieldChat: FC<ITextFieldChatTypes> = ({
       />
     </>
   );
-};
+});

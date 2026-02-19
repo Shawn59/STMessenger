@@ -1,6 +1,6 @@
 import styles from './Chat.module.scss';
 import classNames from 'classnames';
-import React, { FC, useEffect, useRef } from 'react';
+import React, {FC, useCallback, useEffect, useRef} from 'react';
 import type { IChatTypes } from './Chat.types';
 import { Message } from './components/Message/Message';
 import { TextFieldChat } from './components/TextFieldChat/TextFieldChat';
@@ -40,7 +40,7 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
     }
   }
 
-  const showErrorUploadFile = (message: string) => {
+  const showErrorUploadFile = useCallback((message: string) => {
     const snackbar: ISnackbarState = {
       message,
       severity: 'error',
@@ -48,9 +48,9 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
     };
 
     dispatch(actionShowSnackbar(snackbar));
-  };
+  }, []);
 
-  const sendMessage = async (content: MessageContentType) => {
+  const sendMessage = useCallback(async (content: MessageContentType) => {
     const baseMessage = {
       id: uuid(),
       user,
@@ -80,7 +80,7 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
     }
 
     dispatch(actionSendMessage(message));
-  };
+  }, [user, socket])
 
   const readFileAsArrayBuffer = (file: File): Promise<ArrayBuffer> =>
     new Promise((resolve, reject) => {

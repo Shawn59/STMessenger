@@ -12,7 +12,7 @@ app.use(route);
 
 const server = http.createServer(app);
 
-const io = new Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
+const io = new Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] }, maxHttpBufferSize: 10e6, });
 
 io.on('connection', (socket) => {
   console.log('A User connected', socket.id);
