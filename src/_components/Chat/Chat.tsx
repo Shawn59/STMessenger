@@ -2,7 +2,6 @@ import styles from './Chat.module.scss';
 import classNames from 'classnames';
 import React, { FC, useEffect, useRef } from 'react';
 import type { IChatTypes } from './Chat.types';
-import { AvatarAtom, MenuAtom } from '@atoms';
 import { Message } from './components/Message/Message';
 import { TextFieldChat } from './components/TextFieldChat/TextFieldChat';
 import uuid from 'react-uuid';
@@ -17,6 +16,7 @@ import { actionSendMessage } from '../../store/socketSlice/socket.slice';
 import { arrayBufferToBase64 } from '../../utils/bufferUtils';
 import { isUserNearBottom } from './helpers/isUserNearBottom';
 import { HeaderChat } from './components/HeaderChat/HeaderChat';
+import type { MessageContentType } from './Chat.types';
 
 export const Chat: FC<IChatTypes> = ({ className = '' }) => {
   const dispatch = useAppDispatch();
@@ -50,61 +50,45 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
     dispatch(actionShowSnackbar(snackbar));
   };
 
-  const sendMessage = (message: string) => {
-    const newMessage: IMessage = {
+  const sendMessage = async (content: MessageContentType) => {
+    const baseMessage = {
       id: uuid(),
-      text: message,
       user,
       senderId: socket.senderId,
       timestamp: new Date().toISOString(),
     };
 
-    dispatch(actionSendMessage(newMessage));
-  };
+    let message: IMessage;
 
-  const sendGifMessage = (link: string) => {
-    const newMessage: IMessage = {
-      id: uuid(),
-      text: '',
-      link,
-      user,
-      senderId: socket.senderId,
-      timestamp: new Date().toISOString(),
-    };
-
-    dispatch(actionSendMessage(newMessage));
-  };
-
-  const sendFileMessage = (file: File) => {
-    const reader = new FileReader();
-
-    reader.onload = (event) => {
-      const arrayBuffer = event.target.result;
-      let base64 = '';
-
-      if (arrayBuffer instanceof ArrayBuffer) {
-        base64 = arrayBufferToBase64(arrayBuffer);
-      }
-
-      const newMessage: IMessage = {
-        id: uuid(),
+    if (content.type === 'text') {
+      message = { ...baseMessage, text: content.text };
+    } else if (content.type === 'gif') {
+      message = { ...baseMessage, text: '', link: content.link };
+    } else {
+      const arrayBuffer = await readFileAsArrayBuffer(content.file);
+      const base64 = arrayBufferToBase64(arrayBuffer);
+      message = {
+        ...baseMessage,
         text: '',
-        user,
         file: {
-          name: file.name,
-          type: file.type,
-          size: file.size,
+          name: content.file.name,
+          type: content.file.type,
+          size: content.file.size,
           buffer: base64,
         },
-        senderId: socket.senderId,
-        timestamp: new Date().toISOString(),
       };
+    }
 
-      dispatch(actionSendMessage(newMessage));
-    };
-
-    reader.readAsArrayBuffer(file);
+    dispatch(actionSendMessage(message));
   };
+
+  const readFileAsArrayBuffer = (file: File): Promise<ArrayBuffer> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as ArrayBuffer);
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
 
   return (
     <div className={classNames(styles.chat, className as any)}>
@@ -151,8 +135,6 @@ export const Chat: FC<IChatTypes> = ({ className = '' }) => {
         <TextFieldChat
           placeholder={'Введите текст...'}
           onSendMessage={sendMessage}
-          onSendGifMessage={sendGifMessage}
-          onSendFileMessage={sendFileMessage}
           onShowErrorUploadFile={showErrorUploadFile}
         />
       </div>

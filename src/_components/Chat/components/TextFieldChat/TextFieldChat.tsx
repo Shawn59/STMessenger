@@ -12,8 +12,6 @@ import type { onRejectType } from '../../../../_atoms/DownloadFile/DownloadFile.
 export const TextFieldChat: FC<ITextFieldChatTypes> = ({
   className,
   onSendMessage,
-  onSendGifMessage,
-  onSendFileMessage,
   onShowErrorUploadFile,
   ...rest
 }) => {
@@ -29,9 +27,23 @@ export const TextFieldChat: FC<ITextFieldChatTypes> = ({
     const newMessage = message.trim();
 
     if (newMessage) {
-      onSendMessage(newMessage);
+      onSendMessage({ type: 'text', text: newMessage });
 
       setMessage('');
+    }
+  };
+
+  const handleSendGif = (link: string) => {
+    if (link) {
+      onSendMessage({ type: 'gif', link });
+    }
+  };
+
+  const handleAcceptFile = (files: File[]) => {
+    const file = files[0];
+
+    if (file) {
+      onSendMessage({ type: 'file', file: file });
     }
   };
 
@@ -51,14 +63,6 @@ export const TextFieldChat: FC<ITextFieldChatTypes> = ({
 
   const addEmoji = (value: string) => {
     setMessage((prevState) => `${prevState}${value}`);
-  };
-
-  const handleAcceptFile = (files: File[]) => {
-    const file = files[0];
-
-    if (file) {
-      onSendFileMessage(file);
-    }
   };
 
   const handleRejectFile: onRejectType = (file, error) => {
@@ -92,7 +96,7 @@ export const TextFieldChat: FC<ITextFieldChatTypes> = ({
               </InputAdornment>
 
               <InputAdornment position="end">
-                <GifPickerMol onSelect={onSendGifMessage}>
+                <GifPickerMol onSelect={handleSendGif}>
                   <GifSvg className={classNames(styles.endIcon, styles.withFill)} />
                 </GifPickerMol>
               </InputAdornment>

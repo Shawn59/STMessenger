@@ -1,8 +1,7 @@
 import type { TextFieldProps } from '@mui/material';
+import type { MessageContentType } from '../../Chat.types';
 
 export interface ITextFieldChatTypes extends TextFieldProps {
-  onSendMessage: (message: string) => void;
-  onSendGifMessage: (link: string) => void;
-  onSendFileMessage: (file: File) => void;
+  onSendMessage: (value: MessageContentType) => void;
   onShowErrorUploadFile: (message: string) => void;
 }
