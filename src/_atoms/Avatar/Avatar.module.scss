@@ -1,8 +1,7 @@
 .avatarContainer {
   position: relative;
+
   .avatar {
-    width: 44px;
-    height: 44px;
     border-radius: 50%;
     background: $primary-bg;
     display: flex;
@@ -14,6 +13,23 @@
 
     &.cursor {
       cursor: pointer;
+    }
+
+    &.middle {
+      width: 44px;
+      height: 44px;
+    }
+
+    &.big {
+      width: 90px;
+      height: 90px;
+
+      .avatarImg {
+        &.template {
+          width: 50px;
+          height: auto;
+        }
+      }
     }
 
     .avatarImg {

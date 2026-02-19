@@ -5,4 +5,5 @@ export interface IAvatarTypes {
   status?: IUserModel['status'];
   onClick?: () => void;
   className?: string;
+  size?: 'big' | 'middle';
 }
