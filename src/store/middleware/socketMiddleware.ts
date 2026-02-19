@@ -18,7 +18,9 @@ export const socketMiddleware: Middleware = (store) => (next) => (action) => {
 
     const user = store.getState().user.user;
 
-    socket = io(SERVER_URL);
+    socket = io(SERVER_URL, {
+      maxHttpBufferSize: 10e6, // 10mb
+    });
 
     socket.on('connect', () => {
       console.log('Подключение к сокету');
@@ -32,9 +34,7 @@ export const socketMiddleware: Middleware = (store) => (next) => (action) => {
 
     socket.on('message', (data: IMessage) => {
       if (data) {
-        if (data.file && data.file.buffer instanceof ArrayBuffer) {
-          data.file.buffer = arrayBufferToBase64(data.file.buffer);
-        }
+       
 
         store.dispatch(actionSetMessageHistory(data));
 
