@@ -2,9 +2,9 @@ import { FC, useRef, useState } from 'react';
 import { IconButton, Popover } from '@mui/material';
 import styles from './GifPicker.module.scss';
 import { SearchInputAtom } from '@atoms';
-import type { IEmojiPickerAtom } from './GifPicker.types';
+import type { IGifPickerMol } from './GifPicker.types';
 
-export const GifPickerAtom: FC<IEmojiPickerAtom> = ({ children, onSelect }) => {
+export const GifPickerMol: FC<IGifPickerMol> = ({ children, onSelect }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [search, setSearch] = useState('');
 

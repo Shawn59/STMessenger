@@ -2,9 +2,9 @@ import { FC, useRef, useState } from 'react';
 import { IconButton, Popover } from '@mui/material';
 import styles from './EmojiPicker.module.scss';
 import { SearchInputAtom } from '@atoms';
-import type { IEmojiPickerAtom } from './EmojiPicker.types';
+import type { IEmojiPickerMol } from './EmojiPicker.types';
 
-export const EmojiPickerAtom: FC<IEmojiPickerAtom> = ({ children, onSelect }) => {
+export const EmojiPickerMol: FC<IEmojiPickerMol> = ({ children, onSelect }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [search, setSearch] = useState('');
 

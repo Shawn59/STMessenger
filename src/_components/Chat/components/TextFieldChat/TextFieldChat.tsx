@@ -5,7 +5,7 @@ import styles from './TextFieldChat.module.scss';
 import classNames from 'classnames';
 import { ButtonAtom, DownloadFile } from '@atoms';
 import { ClipSvg, GifSvg, SmileSvg } from '../../../../svg';
-import { EmojiPickerAtom, GifPickerAtom } from '@molecules';
+import { EmojiPickerMol, GifPickerMol } from '@molecules';
 import { constants } from '../../../../constants';
 import type { onRejectType } from '../../../../_atoms/DownloadFile/DownloadFile.types';
 
@@ -86,15 +86,15 @@ export const TextFieldChat: FC<ITextFieldChatTypes> = ({
               </InputAdornment>
 
               <InputAdornment position="end" className={styles.smileIconContainer}>
-                <EmojiPickerAtom onSelect={addEmoji}>
+                <EmojiPickerMol onSelect={addEmoji}>
                   <SmileSvg className={classNames(styles.endIcon, styles.smile)} />
-                </EmojiPickerAtom>
+                </EmojiPickerMol>
               </InputAdornment>
 
               <InputAdornment position="end">
-                <GifPickerAtom onSelect={onSendGifMessage}>
+                <GifPickerMol onSelect={onSendGifMessage}>
                   <GifSvg className={classNames(styles.endIcon, styles.withFill)} />
-                </GifPickerAtom>
+                </GifPickerMol>
               </InputAdornment>
 
               <InputAdornment className={styles.sendBtnContainer} position="end">
