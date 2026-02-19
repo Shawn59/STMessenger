@@ -1,28 +1,30 @@
-.avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: $primary-bg;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid $orange-1;
+.avatarContainer {
   position: relative;
-  flex-shrink: 0;
-  overflow: hidden;
+  .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: $primary-bg;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid $orange-1;
+    flex-shrink: 0;
+    overflow: hidden;
 
-  &.cursor {
-    cursor: pointer;
-  }
+    &.cursor {
+      cursor: pointer;
+    }
 
-  .avatarImg {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
+    .avatarImg {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
 
-    &.template {
-      width: 25px;
-      height: 32px;
+      &.template {
+        width: 25px;
+        height: 32px;
+      }
     }
   }
 
@@ -33,7 +35,7 @@
     height: 10px;
     border: 1px solid $primary-bg;
     background: $orange-1;
-    bottom: -2px;
+    bottom: 0;
     right: 6px;
   }
 }
